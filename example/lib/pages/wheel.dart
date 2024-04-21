@@ -48,7 +48,7 @@ class FortuneWheelPage extends HookWidget {
               child: FortuneWheel(
                 alignment: alignment.value,
                 selected: selected.stream,
-                onAnimationStart: () => isAnimating.value = true,
+                onAnimationStart: (_) => isAnimating.value = true,
                 onAnimationEnd: () => isAnimating.value = false,
                 onFling: handleRoll,
                 hapticImpact: HapticImpact.heavy,

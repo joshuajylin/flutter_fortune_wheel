@@ -44,7 +44,7 @@ class FortuneBar extends HookWidget implements FortuneWidget {
   final Curve curve;
 
   /// {@macro flutter_fortune_wheel.FortuneWidget.onAnimationStart}
-  final VoidCallback? onAnimationStart;
+  final void Function(AnimationController)? onAnimationStart;
 
   /// {@macro flutter_fortune_wheel.FortuneWidget.onAnimationEnd}
   final VoidCallback? onAnimationEnd;
@@ -110,7 +110,7 @@ class FortuneBar extends HookWidget implements FortuneWidget {
         return;
       }
 
-      await Future.microtask(() => onAnimationStart?.call());
+      await Future.microtask(() => onAnimationStart?.call(animationCtrl));
       await animationCtrl.forward(from: 0);
       await Future.microtask(() => onAnimationEnd?.call());
     }

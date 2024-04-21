@@ -44,7 +44,7 @@ class FortuneBarPage extends HookWidget {
                     FortuneItem(child: Text(it), onTap: () => print(it))
                 ],
                 onFling: handleRoll,
-                onAnimationStart: () {
+                onAnimationStart: (_) {
                   isAnimating.value = true;
                 },
                 onAnimationEnd: () {

@@ -14,7 +14,7 @@ void main() {
           var didCallStart = false;
           var didCallEnd = false;
 
-          void onStart() {
+          void onStart(_) {
             didCallStart = true;
           }
 
@@ -46,7 +46,7 @@ void main() {
           final startLog = <bool>[];
           final endLog = <bool>[];
 
-          void onStart() {
+          void onStart(_) {
             startLog.add(true);
           }
 
@@ -80,7 +80,7 @@ void main() {
           final startLog = <bool>[];
           final endLog = <bool>[];
 
-          void onStart() {
+          void onStart(_) {
             startLog.add(true);
           }
 

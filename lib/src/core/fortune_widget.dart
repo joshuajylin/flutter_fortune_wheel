@@ -50,7 +50,7 @@ abstract class FortuneWidget implements Widget {
   /// Called when this widget starts an animation.
   /// Useful for disabling other widgets during the animation.
   /// {@endtemplate}
-  VoidCallback? get onAnimationStart;
+  void Function(AnimationController)? get onAnimationStart;
 
   /// {@template flutter_fortune_wheel.FortuneWidget.onAnimationEnd}
   /// Called when this widget's animation ends.

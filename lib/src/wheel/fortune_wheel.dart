@@ -119,7 +119,7 @@ class FortuneWheel extends HookWidget implements FortuneWidget {
   final Curve curve;
 
   /// {@macro flutter_fortune_wheel.FortuneWidget.onAnimationStart}
-  final VoidCallback? onAnimationStart;
+  final void Function(AnimationController)? onAnimationStart;
 
   /// {@macro flutter_fortune_wheel.FortuneWidget.onAnimationEnd}
   final VoidCallback? onAnimationEnd;
@@ -193,9 +193,11 @@ class FortuneWheel extends HookWidget implements FortuneWidget {
         return;
       }
 
-      await Future.microtask(() => onAnimationStart?.call());
-      await rotateAnimCtrl.forward(from: 0);
-      await Future.microtask(() => onAnimationEnd?.call());
+      await Future.microtask(() => onAnimationStart?.call(rotateAnimCtrl));
+      final tickerFuture = rotateAnimCtrl.forward(from: 0);
+      await tickerFuture.whenComplete(() {
+        return Future.microtask(() => onAnimationEnd?.call());
+      });
     }
 
     useEffect(() {
@@ -203,10 +205,12 @@ class FortuneWheel extends HookWidget implements FortuneWidget {
       return null;
     }, []);
 
+    final lastIndex = useState<int>(0);
     final selectedIndex = useState<int>(0);
 
     useEffect(() {
       final subscription = selected.listen((event) {
+        lastIndex.value = selectedIndex.value;
         selectedIndex.value = event;
         animate();
       });
@@ -238,13 +242,18 @@ class FortuneWheel extends HookWidget implements FortuneWidget {
 
                   final isAnimatingPanFactor =
                       rotateAnimCtrl.isAnimating ? 0 : 1;
-                  final selectedAngle =
-                      -2 * _math.pi * (selectedIndex.value / items.length);
+                  final angle = -2 * _math.pi * (lastIndex.value / items.length);
+                  double offsetAngle;
+                  if (lastIndex.value >= selectedIndex.value) {
+                    offsetAngle = (-2 * _math.pi * ((items.length - (lastIndex.value - selectedIndex.value)) / items.length)) * rotateAnim.value;
+                  } else {
+                    offsetAngle = (-2 * _math.pi * ((selectedIndex.value - lastIndex.value) / items.length)) * rotateAnim.value;
+                  }
                   final panAngle =
                       panState.distance * panFactor * isAnimatingPanFactor;
                   final rotationAngle = _getAngle(rotateAnim.value);
                   final alignmentOffset = _calculateAlignmentOffset(alignment);
-                  final totalAngle = selectedAngle + panAngle + rotationAngle;
+                  final totalAngle = angle + offsetAngle + panAngle + rotationAngle;
 
                   final focusedIndex = _vibrateIfBorderCrossed(
                     totalAngle,
